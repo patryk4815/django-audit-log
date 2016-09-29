@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 import copy
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 
+from audit_log import settings as local_settings
 from audit_log.models.fields import LastUserField
 
 
@@ -20,11 +20,11 @@ class LogEntryObjectDescriptor(object):
     def __init__(self, model):
         self.model = model
 
-
     def __get__(self, instance, owner):
-        kwargs = dict((f.attname, getattr(instance, f.attname))
-                    for f in self.model._meta.fields
-                    if hasattr(instance, f.attname))
+        kwargs = dict(
+            (f.attname, getattr(instance, f.attname))
+            for f in self.model._meta.fields if hasattr(instance, f.attname)
+        )
         return self.model(**kwargs)
 
 
@@ -52,7 +52,7 @@ class AuditLogManager(models.Manager):
         setattr(self.instance, '__is_%s_enabled' % self.attname, False)
 
     def is_tracking_enabled(self):
-        if getattr(settings, 'DISABLE_AUDIT_LOG', False):
+        if local_settings.DISABLE_AUDIT_LOG:
             return False
 
         if self.instance is None:
