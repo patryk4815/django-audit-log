@@ -18,6 +18,7 @@ class LastUserField(models.ForeignKey):
         registry = registration.FieldRegistry(self.__class__)
         registry.add_field(cls, self)
 
+
 class LastSessionKeyField(models.CharField):
     """
     A field that keeps a reference to the last session key that was used to access the model.
@@ -31,26 +32,28 @@ class LastSessionKeyField(models.CharField):
         registry = registration.FieldRegistry(self.__class__)
         registry.add_field(cls, self)
 
+
 class CreatingUserField(LastUserField):
     """
     A field that keeps track of the user that created a model instance.
     This will only be set once upon an INSERT in the database.
     """
-    #dont actually need to do anything, everything is handled by the parent class
-    #the different logic goes in the middleware
+    # dont actually need to do anything, everything is handled by the parent class
+    # the different logic goes in the middleware
     pass
+
 
 class CreatingSessionKeyField(LastSessionKeyField):
     """
     A field that keeps track of the last session key with which a model instance was created.
     This will only be set once upon an INSERT in the database.
     """
-    #dont actually need to do anything, everything is handled by the parent class
-    #the different logic goes in the middleware
+    # dont actually need to do anything, everything is handled by the parent class
+    # the different logic goes in the middleware
     pass
 
 
-#South stuff:
+# South stuff:
 
 rules = [((LastUserField, CreatingUserField),
     [],    
